@@ -1,34 +1,25 @@
-extern GetStdHandle
-extern WriteFile
-extern ExitProcess
+; ------------------------------------------------------------------
+; helloworld.asm
+;
+; This is a Win32 console program that writes "Hello World"
+; on a single line and then exits.
+;
+; To assemble to .obj: nasm -f win32 helloworld.asm
+; To compile to .exe:  gcc helloworld.obj -o helloworld.exe
+; ------------------------------------------------------------------
 
-section .rodata
+        global    _main                ; declare main() method
+        extern    _printf              ; link to external library
 
-msg db "Hello World!", 0x0d, 0x0a
+        segment  .data
+        message: db   'Hello world', 0xA, 0  ; text message
+                    ; 0xA (10) is hex for (NL), carriage return
+                    ; 0 terminates the line
 
-msg_len equ $-msg
-stdout_query equ -11
-
-section .data
-
-stdout dw 0
-bytes_written dw 0
-
-section .text
-
-global start
-
-start:
-    mov rcx, stdout_query
-    call GetStdHandle
-    mov [rel stdout], rax
-
-    mov  rcx, [rel stdout]
-    mov  rdx, msg
-    mov  r8, msg_len
-    mov  r9, bytes_written
-    push qword 0
-    call WriteFile
-
-    xor rcx, rcx
-    call ExitProcess
+        ; code is put in the .text section
+        section .text
+_main:                            ; the entry point! void main()
+        push    message           ; save message to the stack
+        call    _printf           ; display the first value on the stack
+        add     esp, 4            ; clear the stack
+        ret                       ; return
