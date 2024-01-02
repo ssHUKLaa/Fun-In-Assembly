@@ -1,0 +1,22 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Assemble with NASM",
+            "type": "shell",
+            "command": "nasm",
+            "args": [
+                "-f",
+                "elf64",  // Replace with your required format (e.g., elf32, elf64)
+                "hello_world.asm"  // Replace with your assembly file name
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
