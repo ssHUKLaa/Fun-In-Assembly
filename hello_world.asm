@@ -1,25 +1,27 @@
-; ------------------------------------------------------------------
-; helloworld.asm
-;
-; This is a Win32 console program that writes "Hello World"
-; on a single line and then exits.
-;
-; To assemble to .obj: nasm -f win32 helloworld.asm
-; To compile to .exe:  gcc helloworld.obj -o helloworld.exe
-; ------------------------------------------------------------------
+%macro COMMENT 0
+    eax: syscall - 1 is stdout
+    ecx: pointer to register that has helloworld
+    edx: length of helloworld
+%endmacro 
 
-        global    _main                ; declare main() method
-        extern    _printf              ; link to external library
 
-        segment  .data
-        message: db   'Hello world', 0xA, 0  ; text message
-                    ; 0xA (10) is hex for (NL), carriage return
-                    ; 0 terminates the line
 
-        ; code is put in the .text section
-        section .text
-_main:                            ; the entry point! void main()
-        push    message           ; save message to the stack
-        call    _printf           ; display the first value on the stack
-        add     esp, 4            ; clear the stack
-        ret                       ; return
+section .text
+
+global _start
+
+_start:
+    mov eax, 4 ;4 is sys_write
+    mov ebx, 1 ;1 is stdout
+    mov ecx, msg ;point to message
+    mov edx, 14 ;msg length
+    int 0x80 ;interrupt
+
+    mov eax, 1
+    xor ebx, ebx ;forces ebx to 0
+    int 0x80
+
+
+section .data
+    ;msg is the variable, db is the type (just bytes)
+    msg db 'Hello World!', 0x0A ;0 at the end to terminate string
